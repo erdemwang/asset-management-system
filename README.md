@@ -1,1 +1,36 @@
-:root{font-family:Inter,'Noto Sans TC',system-ui,sans-serif;color:#172033;background:#f5f7fb}*{box-sizing:border-box}body{margin:0}.app{display:flex;min-height:100vh}aside{width:280px;background:#101828;color:white;padding:22px;position:fixed;inset:0 auto 0 0;z-index:4}main{margin-left:280px;width:calc(100% - 280px);padding:28px}.brand{display:flex;gap:12px;align-items:center;margin-bottom:26px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#4f46e5,#06b6d4);display:grid;place-items:center;font-weight:800}.brand span{display:block;color:#98a2b3;font-size:12px;margin-top:2px}.close,.hamb{display:none}.nav{width:100%;border:0;background:transparent;color:#cbd5e1;display:flex;gap:12px;align-items:center;padding:13px 14px;border-radius:12px;margin:4px 0;font-size:15px;cursor:pointer}.nav:hover,.nav.active{background:#1d2939;color:white}.sidecard{margin-top:28px;background:#1d2939;border:1px solid #344054;border-radius:18px;padding:16px;color:#d0d5dd}.sidecard p{font-size:13px;line-height:1.5;color:#98a2b3}header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}h1{margin:0;font-size:30px}header p{margin:6px 0 0;color:#667085}.sync{border:0;background:#111827;color:#fff;padding:12px 16px;border-radius:12px;display:flex;gap:8px;align-items:center;cursor:pointer}.spin{animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}.card{background:white;border:1px solid #e5e7eb;border-radius:22px;padding:20px;box-shadow:0 10px 25px #1018280a}.card svg{color:#4f46e5}.card span{display:block;margin-top:14px;color:#667085}.card b{font-size:32px;display:block;margin-top:4px}.toolbar{display:flex;gap:12px;margin-bottom:18px}.search{flex:1;background:white;border:1px solid #e5e7eb;border-radius:14px;padding:0 14px;display:flex;align-items:center;gap:10px}.search input{border:0;outline:0;width:100%;height:48px;font-size:15px}select{border:1px solid #e5e7eb;background:white;border-radius:14px;padding:0 14px;font-size:15px}.panel{background:white;border:1px solid #e5e7eb;border-radius:22px;box-shadow:0 10px 25px #1018280a;overflow:hidden}.panelTitle{padding:18px 20px;border-bottom:1px solid #eef2f7;display:flex;justify-content:space-between;color:#667085}.panelTitle b{color:#101828}.tableWrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:960px}th,td{text-align:left;padding:15px 18px;border-bottom:1px solid #f1f5f9;vertical-align:middle}th{font-size:13px;color:#667085;background:#fcfcfd}td small{display:block;color:#667085;margin-top:4px}.pill{background:#eef2ff;color:#4338ca;border-radius:999px;padding:5px 10px;font-size:12px}.status{background:#ecfdf3;color:#027a48;border-radius:999px;padding:5px 10px;font-size:12px}.actions{display:flex;gap:8px}.actions a{display:inline-flex;align-items:center;gap:5px;text-decoration:none;background:#f8fafc;border:1px solid #e5e7eb;color:#344054;border-radius:10px;padding:8px 10px;font-size:13px}.gridBuildings{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.building{background:white;border:1px solid #e5e7eb;border-radius:20px;padding:22px;box-shadow:0 10px 25px #1018280a}.building svg{color:#4f46e5}.building b{display:block;margin-top:12px;font-size:18px}.building span{color:#667085;font-size:14px}.settings{padding:24px}.settings pre{background:#101828;color:#e5e7eb;border-radius:16px;padding:18px;overflow:auto}@media(max-width:900px){aside{transform:translateX(-100%);transition:.2s}aside.open{transform:translateX(0)}main{margin-left:0;width:100%;padding:18px}.hamb,.close{display:inline-flex;border:0;background:transparent}.hamb{background:white;border-radius:12px;padding:10px}.close{margin-left:auto;color:white}.cards,.gridBuildings{grid-template-columns:1fr}.toolbar{flex-direction:column}.search input{height:46px}select{height:46px}header{gap:12px;align-items:flex-start}h1{font-size:24px}.sync{white-space:nowrap}}
+# 文件管理系統 — Milestone 1
+
+這是第一版可部署測試專案，功能包含：登入、Dashboard、請求書列表、修繕單列表、搜尋、年度篩選、建物篩選、Google Drive 開啟／下載連結。
+
+## 測試登入
+
+- 帳號：admin
+- 密碼：123456
+
+## 本版資料狀態
+
+Milestone 1 先使用 `src/data/mockDocuments.js` 內的示範資料，資料來源取自目前 Google Drive 資料夾已確認的檔案名稱與連結格式。下一版會改成由 Google Drive API 自動讀取。
+
+## Netlify 設定
+
+Build command：
+
+```bash
+npm run build
+```
+
+Publish directory：
+
+```bash
+dist
+```
+
+## 上傳 GitHub
+
+將此資料夾內全部檔案上傳到 GitHub Repository 根目錄。
+
+## 下一個 Milestone
+
+- 串接 Google Drive API
+- 自動讀取請求書／修繕單資料夾
+- 自動解析檔名
