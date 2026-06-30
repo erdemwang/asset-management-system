@@ -1,0 +1,97 @@
+import React,{useEffect,useMemo,useState} from 'react';
+import { createRoot } from 'react-dom/client';
+import { Building2, FileText, Wrench, Settings, Search, Download, Eye, RefreshCw, LayoutDashboard, HardDrive, Shield, Moon, Menu, X } from 'lucide-react';
+import { sampleFiles } from './data/sampleFiles';
+import { downloadUrl, previewUrl, loadDriveFiles } from './services/drive';
+import './style.css';
+
+const nav = [
+  {key:'Dashboard', icon:LayoutDashboard},
+  {key:'請求書', icon:FileText},
+  {key:'修繕單', icon:Wrench},
+  {key:'設備管理', icon:HardDrive},
+  {key:'建物管理', icon:Building2},
+  {key:'系統設定', icon:Settings},
+];
+
+function parseDriveFile(file){
+  const name = file.name || file.title || '';
+  const no = (name.match(/第(\d+)號/)||[])[1] || '';
+  const building = ['國際大樓','信義華廈','台茂','樂富大直館','順達','觀音物流中心'].find(b=>name.includes(b)) || '';
+  const floor = (name.match(/(B\d+[-\d]*|\d+F|\d+樓|B\d+F)/i)||[])[1] || '';
+  const year = no ? no.slice(0,3) : ((name.match(/(112|113|114|115)/)||[])[1] || '');
+  const ext = (name.split('.').pop() || '').toLowerCase();
+  let type = name.includes('修繕') || name.includes('報價') ? '修繕單' : '請求書';
+  if(name.includes('設備')) type = '設備';
+  return { id:file.id, no, type, building, year, floor, vendor:'', title:name.replace(/\.[^.]+$/,''), date:(file.modifiedTime||file.updated_at||'').slice(0,10).replaceAll('-','/'), amount:'', status:'Drive同步', ext };
+}
+
+function App(){
+  const [active,setActive]=useState('Dashboard');
+  const [query,setQuery]=useState('');
+  const [year,setYear]=useState('全部');
+  const [building,setBuilding]=useState('全部');
+  const [files,setFiles]=useState(sampleFiles);
+  const [syncing,setSyncing]=useState(false);
+  const [sidebar,setSidebar]=useState(false);
+
+  async function sync(){
+    setSyncing(true);
+    const drive = await loadDriveFiles();
+    if(drive.length) setFiles(drive.map(parseDriveFile));
+    setTimeout(()=>setSyncing(false),500);
+  }
+  useEffect(()=>{ sync(); },[]);
+
+  const buildings = ['全部',...Array.from(new Set(files.map(f=>f.building).filter(Boolean)))];
+  const years = ['全部',...Array.from(new Set(files.map(f=>f.year).filter(Boolean))).sort().reverse()];
+  const filtered = useMemo(()=> files.filter(f=>{
+    const matchType = active==='Dashboard'||active==='建物管理'||active==='系統設定'||(active==='設備管理'?f.type==='設備':f.type===active);
+    const q = query.trim().toLowerCase();
+    const matchQ = !q || Object.values(f).join(' ').toLowerCase().includes(q);
+    const matchY = year==='全部'||f.year===year;
+    const matchB = building==='全部'||f.building===building;
+    return matchType && matchQ && matchY && matchB;
+  }),[files,active,query,year,building]);
+
+  const counts = {
+    '請求書': files.filter(f=>f.type==='請求書').length,
+    '修繕單': files.filter(f=>f.type==='修繕單').length,
+    '設備': files.filter(f=>f.type==='設備').length,
+    '建物': new Set(files.map(f=>f.building).filter(Boolean)).size,
+  };
+
+  return <div className="app">
+    <aside className={sidebar?'open':''}>
+      <div className="brand"><div className="logo">AM</div><div><b>Asset Portal</b><span>資產管理平台</span></div><button className="close" onClick={()=>setSidebar(false)}><X size={18}/></button></div>
+      {nav.map(n=>{const Icon=n.icon;return <button key={n.key} className={active===n.key?'nav active':'nav'} onClick={()=>{setActive(n.key);setSidebar(false)}}><Icon size={18}/>{n.key}</button>})}
+      <div className="sidecard"><Shield size={18}/><b>Drive Sync Ready</b><p>設定 Google API Key 後即可自動讀取 Drive 資料夾。</p></div>
+    </aside>
+    <main>
+      <header>
+        <button className="hamb" onClick={()=>setSidebar(true)}><Menu/></button>
+        <div><h1>{active}</h1><p>Google Drive 文件、請求書、修繕單與設備履歷集中管理</p></div>
+        <button className="sync" onClick={sync}><RefreshCw size={16} className={syncing?'spin':''}/>同步 Drive</button>
+      </header>
+      <section className="cards">
+        <Card icon={FileText} label="請求書" value={counts['請求書']} />
+        <Card icon={Wrench} label="修繕單" value={counts['修繕單']} />
+        <Card icon={HardDrive} label="設備" value={counts['設備']} />
+        <Card icon={Building2} label="建物" value={counts['建物']} />
+      </section>
+      <section className="toolbar">
+        <div className="search"><Search size={18}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="搜尋：國際大樓、漏水、1150026、廠商、樓層..."/></div>
+        <select value={year} onChange={e=>setYear(e.target.value)}>{years.map(y=><option key={y}>{y}</option>)}</select>
+        <select value={building} onChange={e=>setBuilding(e.target.value)}>{buildings.map(b=><option key={b}>{b}</option>)}</select>
+      </section>
+      {active==='系統設定'? <SettingsPage/> : active==='建物管理'? <BuildingPage files={files}/> : <FileTable files={filtered}/>} 
+    </main>
+  </div>
+}
+function Card({icon:Icon,label,value}){return <div className="card"><Icon/><span>{label}</span><b>{value}</b></div>}
+function FileTable({files}){return <section className="panel"><div className="panelTitle"><b>文件清單</b><span>{files.length} 筆</span></div><div className="tableWrap"><table><thead><tr><th>編號</th><th>類型</th><th>建物</th><th>樓層</th><th>名稱</th><th>日期</th><th>狀態</th><th>附件</th></tr></thead><tbody>{files.map((f,i)=><tr key={f.id+i}><td>{f.no||'-'}</td><td><span className="pill">{f.type}</span></td><td>{f.building||'-'}</td><td>{f.floor||'-'}</td><td><b>{f.title}</b><small>{f.vendor}{f.amount?` · NT$${f.amount}`:''}</small></td><td>{f.date||'-'}</td><td><span className="status">{f.status}</span></td><td className="actions">{f.ext!=='record'&&<><a href={previewUrl(f.id)} target="_blank"><Eye size={16}/>預覽</a><a href={downloadUrl(f.id)}><Download size={16}/>下載</a></>}</td></tr>)}</tbody></table></div></section>}
+function BuildingPage({files}){const groups=Array.from(new Set(files.map(f=>f.building).filter(Boolean)));return <section className="gridBuildings">{groups.map(b=><div className="building" key={b}><Building2/><b>{b}</b><span>{files.filter(f=>f.building===b).length} 筆文件</span></div>)}</section>}
+function SettingsPage(){return <section className="panel settings"><h2>Google Drive 自動同步設定</h2><p>請到 Netlify → Site configuration → Environment variables 新增以下變數。</p><pre>{`GOOGLE_API_KEY=你的 Google API Key
+DRIVE_ROOT_FOLDER_ID=1a2eXtBaYVInWjW-XaDsWbt5pN64R15rl`}</pre><p>若資料夾不是公開讀取，請改用 Service Account，並將該 Service Account email 加入 Drive 資料夾共用名單。</p></section>}
+
+createRoot(document.getElementById('root')).render(<App/>);
