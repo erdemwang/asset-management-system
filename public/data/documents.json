@@ -1,0 +1,50 @@
+[
+  {
+    "uid": "seed-req-115041",
+    "type": "請求書",
+    "number": "115041",
+    "building": "信義華廈",
+    "floor": "3F",
+    "title": "更換LED輕鋼架費用",
+    "year": "115",
+    "fileName": "晶立字第115041號_信義華廈_3F_更換LED輕鋼架費用.docx",
+    "viewUrl": "https://drive.google.com/drive/folders/1ph99kjudf_4vFy8zeNe9ewrW7i0Pnnx7",
+    "modifiedTime": "2026-06-24"
+  },
+  {
+    "uid": "seed-req-115039",
+    "type": "請求書",
+    "number": "115039",
+    "building": "信義華廈",
+    "floor": "",
+    "title": "11506高壓電氣設備定期檢測紀錄總表用印",
+    "year": "115",
+    "fileName": "晶立字第115039號_信義華廈_11506高壓電氣設備定期檢測紀錄總表用印.docx",
+    "viewUrl": "https://drive.google.com/drive/folders/1ogS1vdq9Ta62BhVDUdrImzm2RDJ5WkT1",
+    "modifiedTime": "2026-06-24"
+  },
+  {
+    "uid": "seed-rep-xinyi-water",
+    "type": "修繕單",
+    "number": "115000",
+    "building": "信義華廈",
+    "floor": "3F",
+    "title": "漏水新設水盤工程報價單",
+    "year": "115",
+    "fileName": "信義華廈_漏水新設水盤工程報價單(原報價86,625元，議價後82,000元).pdf",
+    "viewUrl": "https://drive.google.com/file/d/12tGUnhSwb0pH3RKwgTn2SOWncJ_A55g9",
+    "modifiedTime": "2026-06-12"
+  },
+  {
+    "uid": "seed-rep-intl-window",
+    "type": "修繕單",
+    "number": "115000",
+    "building": "國際大樓",
+    "floor": "16F",
+    "title": "窗框重作報價單",
+    "year": "115",
+    "fileName": "國際大樓_16F_窗框重作報價單(簽回).pdf",
+    "viewUrl": "https://drive.google.com/file/d/17uLIElBrik4cEEwhxHIPzanHNgyL_1ko",
+    "modifiedTime": "2026-06-11"
+  }
+]
